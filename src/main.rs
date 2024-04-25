@@ -1,63 +1,46 @@
-use tetra::graphics::{self, Color, Texture, DrawParams};
+use tetra::graphics::{Texture};
 use tetra::{Context, ContextBuilder, State};
-use tetra::input::{self, Key};
-use tetra::math::Vec2;
+//use tetra::input::{self, Key};
+
+mod environment;
+use environment::{Background, Foreground};
 
 // Context: a struct that holds the global "state" managed by the framework
 
 // State: for the game loop
 struct GameState {
-    background : Texture,
-    foreground : Texture,
+    background : Background,
+    foreground : Foreground,
 }
 
 impl GameState {
     fn new(ctx: &mut Context) -> tetra::Result<GameState> {
-        let background = Texture::new(ctx, "./resources/sky.png")?; // background image
-        let foreground = Texture::new(ctx, "./resources/ground.png")?; // foreground image
+        let img = Texture::new(ctx, "./resources/sky.png")?; // background image
+        let background = Background::new(img, 0.0, 0.0, 3840f32, 2160f32, SCREEN_W/3840f32); // image, x, y, width, height, scale
 
-        Ok(GameState { background, foreground })
+        let img = Texture::new(ctx, "./resources/ground.png")?; // foreground image
+        let foreground = Foreground::new(img, 0.0, 0.0, 3840f32, 2160f32, SCREEN_W/3840f32); // image, x, y, width, height, scale
+
+        Ok(GameState { background, foreground})
     }
 }
 
 impl State for GameState {
     fn draw(&mut self, ctx: &mut Context) -> tetra::Result {
-        // Background color of window
-        graphics::clear(ctx, Color::rgb(1.0, 0.611, 0.318));
 
-        // Draw background image
-        self.background.draw(ctx, DrawParams{
-            position : Vec2::new(0.0, 0.0),
+        self.background.draw(ctx);
+        self.background.scroll();
 
-            scale : Vec2::new(
-                SCREEN_W / (self.background.width() as f32), 
-                SCREEN_H / (self.background.height() as f32)),
-                
-            origin : Vec2::new(0.0, 0.0),
-            rotation : 0.0,
-            color : Color::WHITE
-        });
-
-        // Draw foreground image
-        self.foreground.draw(ctx, DrawParams{
-            position : Vec2::new(0.0, 0.0),
-
-            scale : Vec2::new(
-                SCREEN_W / (self.foreground.width() as f32),
-                SCREEN_H / (self.foreground.height() as f32)),
-
-            origin : Vec2::new(0.0, 0.0),
-            rotation : 0.0,
-            color : Color::WHITE
-        });
+        self.foreground.draw(ctx);
 
         Ok(())
     }
+
 }
 
-const SCALE: f32 = 0.6;
-const SCREEN_W: f32 = 1920.0*SCALE;
-const SCREEN_H: f32 = 1080.0*SCALE;
+const SCALE_FACTOR: f32 = 0.6;
+const SCREEN_W: f32 = 1920.0*SCALE_FACTOR;
+const SCREEN_H: f32 = 1080.0*SCALE_FACTOR;
 
 fn main() -> tetra::Result {
 
