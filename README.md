@@ -4,7 +4,7 @@
 
 Five years later we set our sights on re-implementing the game in a Rust framework by reusing and expanding upon our original ideas and assets; with the goal of creating a finished product this time around.
 
-Created using the [tetra](https://github.com/17cupsofcoffee/tetra) framework. Credits to 17cupsofcoffee.
+Created using the [Tetra](https://github.com/17cupsofcoffee/tetra) framework. Credits to 17cupsofcoffee.
 
 **Run the game from the directory with the `cargo run` command.**
 
