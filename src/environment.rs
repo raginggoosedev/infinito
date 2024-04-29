@@ -3,7 +3,7 @@ use tetra::{Context};
 use tetra::math::Vec2;
 
 // Background class
-
+#[derive(Debug)]
 pub struct Background {
     image : Texture,
     x : f32,
@@ -13,6 +13,7 @@ pub struct Background {
     scale : f32,
     color : Color,
 }
+
 
 impl Background {
 
@@ -60,36 +61,51 @@ impl Background {
         // Draw default background color
         graphics::clear(ctx, self.color);
 
+
+        // To seemlessly scroll the image across the screen, the image is drawn 3 times side by side
+        // The first image is the middle image - which starts by taking the whole screen
+        // The post-image is the image immediately to the right of the first image
+        // The pre-image is the image immediately to the left of the first image
+
         // Draw first image
         self.image.draw(ctx, DrawParams{
             position : Vec2::new(self.x, self.y),
             scale : Vec2::new(self.scale, self.scale),
-            origin : Vec2::new(self.x, self.y),
+            origin : Vec2::new(0.0, 0.0),
             rotation: 0.0,
             color: Color::WHITE
         });
 
-        // Draw second image
+        // Draw post-image
         self.image.draw(ctx, DrawParams{
             position : Vec2::new(self.x + self.scale*self.width, self.y),
             scale : Vec2::new(self.scale, self.scale),
-            origin : Vec2::new(self.x, self.y),
+            origin : Vec2::new(0.0, 0.0),
             rotation: 0.0,
             color: Color::WHITE
         });
 
+        // Draw pre-image
+        self.image.draw(ctx, DrawParams{
+            position : Vec2::new(self.x - self.scale*self.width, self.y),
+            scale : Vec2::new(self.scale, self.scale),
+            origin : Vec2::new(0.0, 0.0),
+            rotation: 0.0,
+            color: Color::WHITE
+        });
 
     }
 
 
     // Background scroll
 
-    #[allow(dead_code)]
     pub fn scroll(&mut self) {
-        self.x -= 0.1;
-        if self.x <= self.width*self.scale*-1.0 {
-            self.x = 0.0;
-        }
+        let screen_w = self.width*self.scale;
+        let speed = -0.1;
+
+        self.x += speed;
+        if self.x <= screen_w*-1.0 { self.x = 0.0; }
+        else if self.x >= screen_w { self.x = 0.0; }
     }
 
 }
@@ -141,10 +157,35 @@ impl Foreground {
 
     #[allow(dead_code)]
     pub fn draw(&self, ctx: &mut Context) {
+
+        // To seemlessly scroll the image across the screen, the image is drawn 3 times side by side
+        // The first image is the middle image - which starts by taking the whole screen
+        // The post-image is the image immediately to the right of the first image
+        // The pre-image is the image immediately to the left of the first image
+
+        // Draw first image
         self.image.draw(ctx, DrawParams{
             position : Vec2::new(self.x, self.y),
             scale : Vec2::new(self.scale, self.scale),
-            origin : Vec2::new(self.x, self.y),
+            origin : Vec2::new(0.0, 0.0),
+            rotation: 0.0,
+            color: Color::WHITE
+        });
+
+        // Draw post-image
+        self.image.draw(ctx, DrawParams{
+            position : Vec2::new(self.x + self.width*self.scale, self.y),
+            scale : Vec2::new(self.scale, self.scale),
+            origin : Vec2::new(0.0, 0.0),
+            rotation: 0.0,
+            color: Color::WHITE
+        });
+
+        // Draw pre-image
+        self.image.draw(ctx, DrawParams{
+            position : Vec2::new(self.x - self.width*self.scale, self.y),
+            scale : Vec2::new(self.scale, self.scale),
+            origin : Vec2::new(0.0, 0.0),
             rotation: 0.0,
             color: Color::WHITE
         });

@@ -16,7 +16,7 @@ struct GameState {
 impl GameState {
     fn new(ctx: &mut Context) -> tetra::Result<GameState> {
         let img = Texture::new(ctx, "./resources/sky.png")?; // background image
-        let background = Background::new(img, 0.0, 0.0, 3840f32, 2160f32, SCREEN_W/3840f32); // image, x, y, width, height, scale
+        let background = Background::new(img, 0.0, 0.0, 3840f32, 2160f32, SCREEN_W/3840.0); // image, x, y, width, height, scale
 
         let img = Texture::new(ctx, "./resources/ground.png")?; // foreground image
         let foreground = Foreground::new(img, 0.0, 0.0, 3840f32, 2160f32, SCREEN_W/3840f32); // image, x, y, width, height, scale
